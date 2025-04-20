@@ -3,6 +3,7 @@ from fastapi.responses import RedirectResponse
 import string, random
 import redis
 import os
+import socket
 
 app = FastAPI()
 
@@ -21,6 +22,10 @@ async def shorten_url(request: Request):
 
     short_code = generate_short_code()
     r.set(short_code, long_url)
+
+    pod_name = socket.gethostname()
+    print(f"[{pod_name}] Shortened {long_url} -> {short_code}")
+
     return {"short_url": f"http://localhost:8000/{short_code}"}
 
 @app.get("/{short_code}")
